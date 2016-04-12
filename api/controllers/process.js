@@ -9,7 +9,7 @@ module.exports = {
 
     handler: (request, reply) => {
 
-        console.log(request.payload);
+        console.log(request.headers);
 
         reply('ok');
 
