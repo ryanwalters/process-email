@@ -11,7 +11,7 @@ const internals = {};
 // Routes
 
 internals.routes = [
-    { method: 'GET', path: '/process', config: Process }
+    { method: 'POST', path: '/process', config: Process }
 ];
 
 
