@@ -11,6 +11,7 @@ const internals = {};
 // Routes
 
 internals.routes = [
+    { method: 'GET', path: '/', config: { handler: (request, reply) => reply('welcome') } },
     { method: 'POST', path: '/process', config: Process }
 ];
 

@@ -1,6 +1,9 @@
 'use strict';
 
+const Boom = require('boom');
 const MailParser = require('mailparser').MailParser;
+const Request = require('request');
+const Xml2js = require('xml2js');
 
 
 // User endpoints
@@ -8,6 +11,33 @@ const MailParser = require('mailparser').MailParser;
 module.exports = {
 
     handler: (request, reply) => {
+
+        // Check the AWS SNS message type
+
+        switch (request.headers['x-amz-sns-message-type']) {
+            case 'SubscriptionConfirmation':
+
+                // Confirm the ARN is valid before subscribing
+
+                if (process.env.AMAZON_ARNS.indexOf(request.payload.TopicArn) !== -1) {
+
+                    Request(request.payload.SubscribeURL, (error, response, body) => {
+
+                        if (!error && response.statusCode === 200) {
+
+                            console.log('Successfully subscribed.');
+
+                            Xml2js.parseString(body, (err, result) => console.log(result));
+                        }
+                    });
+                }
+
+                break;
+            case 'Notification':
+                break;
+            default:
+                return reply(Boom.badRequest());
+        }
 
         console.log(request.headers);
 

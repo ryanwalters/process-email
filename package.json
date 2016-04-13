@@ -11,9 +11,12 @@
   "author": "Ryan Walters",
   "license": "ISC",
   "dependencies": {
+    "boom": "^3.1.2",
     "confidence": "^3.0.0",
     "hapi": "^13.3.0",
     "hoek": "^3.0.4",
-    "mailparser": "^0.5.3"
+    "mailparser": "^0.5.3",
+    "request": "^2.71.0",
+    "xml2js": "^0.4.16"
   }
 }
