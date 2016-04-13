@@ -52,9 +52,7 @@ module.exports = {
             case 'Notification':
 
                 const message = JSON.parse(payload.Message);
-
-                console.log(message);
-
+                
 
                 // Make sure the email is safe
 
@@ -84,11 +82,11 @@ module.exports = {
                         Message: {
                             Body: {
                                 Html: {
-                                    Data: `To: ${message.destination}<hr />${email.html}`,
+                                    Data: `To: ${message.receipt.recipients.join(', ')}<hr />${email.html}`,
                                     Charset: Charset.UTF_8
                                 },
                                 Text: {
-                                    Data: `To: ${message.destination} --- ${email.text}`,
+                                    Data: `To: ${message.receipt.recipients.join(', ')} --- ${email.text}`,
                                     Charset: Charset.UTF_8
                                 }
                             },
@@ -97,7 +95,7 @@ module.exports = {
                                 Charset: Charset.UTF_8
                             }
                         },
-                        Source: `${email.from[0]} <${process.env.SOURCE_EMAIL}>`,
+                        Source: `${email.from[0].name} <${process.env.SOURCE_EMAIL}>`,
                         ReplyToAddresses: email.from.map((person) => `${person.name} <${person.address}>`)
                     }, (err, data) => {
 
