@@ -9,6 +9,11 @@ const Status = require('../constants').Status;
 const Xml2js = require('xml2js');
 
 
+// Set AWS defaults
+
+AWS.config.region = process.env.AWS_DEFAULT_REGION;
+
+
 // User endpoints
 
 module.exports = {
@@ -104,7 +109,7 @@ module.exports = {
                     ses.sendEmail(sesParams, (err, data) => {
 
                         if (err) {
-                            console.log(err, err.stack);
+                            return console.log(err, err.stack);
                         }
 
                         console.log('Email successfully sent.', data);
