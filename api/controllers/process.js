@@ -20,7 +20,7 @@ module.exports = {
 
                 // Confirm the ARN is valid before subscribing
 
-                if (process.env.AMAZON_ARNS.indexOf(request.payload.TopicArn) === -1) {
+                if (process.env.AMAZON_TOPIC_ARNS && process.env.AMAZON_TOPIC_ARNS.indexOf(request.payload.TopicArn) === -1) {
                     return reply(Boom.badRequest('Invalid TopicArn'));
                 }
 
