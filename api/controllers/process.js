@@ -58,46 +58,62 @@ module.exports = {
                     message.receipt.spfVerdict === Status.PASS &&
                     message.receipt.dkimVerdict === Status.PASS) {*/
 
-                    const parser = new MailParser();
 
-                    console.log(message);
+                // Parse the content delivered by SNS
 
-                    parser.on('end', (email) => {
+                const parser = new MailParser();
 
-                        const sesParams = {
-                            Destination: {
-                                /*BccAddresses: [''],
-                                CcAddresses: [''],*/
-                                ToAddresses: email.to.map((value) => value.address)
-                            },
-                            Message: {
-                                Body: {
-                                    Html: {
-                                        Data: email.html,
-                                        Charset: Charset.UTF_8
-                                    },
-                                    Text: {
-                                        Data: email.text,
-                                        Charset: Charset.UTF_8
-                                    }
+                parser.on('end', (email) => {
+
+
+                    // Set the parameters for sending the email to the recipients
+
+                    const sesParams = {
+                        Destination: {
+                            /*BccAddresses: [''],
+                            CcAddresses: [''],*/
+                            ToAddresses: email.to.map((value) => value.address)
+                        },
+                        Message: {
+                            Body: {
+                                Html: {
+                                    Data: email.html,
+                                    Charset: Charset.UTF_8
                                 },
-                                Subject: {
-                                    Data: email.subject,
+                                Text: {
+                                    Data: email.text,
                                     Charset: Charset.UTF_8
                                 }
                             },
-                            Source: process.env.SOURCE_EMAIL,
+                            Subject: {
+                                Data: email.subject,
+                                Charset: Charset.UTF_8
+                            }
+                        },
+                        Source: process.env.SOURCE_EMAIL,
 
-                            ReplyToAddresses: email.from.map((value) => value.address)/*,
-                            ReturnPath: '',
-                            ReturnPathArn: '',
-                            SourceArn: ''*/
-                        };
+                        ReplyToAddresses: email.from.map((value) => value.address)/*,
+                        ReturnPath: '',
+                        ReturnPathArn: '',
+                        SourceArn: ''*/
+                    };
 
-                        console.log(sesParams);
-                    });
-                    parser.write(message.content);
-                    parser.end();
+
+                    // Send the email
+
+                    ses.sendEmail(sesParams, (err, data) => {
+
+                        if (err) {
+                            console.log(err, err.stack);
+                        }
+
+                        console.log('Email successfully sent.', data);
+                    })
+                });
+
+                parser.write(message.content);
+                parser.end();
+
                 //}
 
                 break;
