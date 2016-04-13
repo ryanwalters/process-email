@@ -2,9 +2,10 @@
 
 const AWS = require('aws-sdk');
 const Boom = require('boom');
-const Status = require('../constants').Status;
+const Charset = require('../constants').Charset;
 const MailParser = require('mailparser').MailParser;
 const Request = require('request');
+const Status = require('../constants').Status;
 const Xml2js = require('xml2js');
 
 
@@ -47,35 +48,6 @@ module.exports = {
 
                 const message = JSON.parse(payload.Message);
                 const ses = new AWS.SES();
-                const sesParams = {
-                    Destination: {
-                        BccAddresses: [''],
-                        CcAddresses: [''],
-                        ToAddresses: ['']
-                    },
-                    Message: {
-                        Body: {
-                            Html: {
-                                Data: '',
-                                Charset: ''
-                            },
-                            Text: {
-                                Data: '',
-                                Charset: ''
-                            }
-                        },
-                        Subject: {
-                            Data: '',
-                            Charset: ''
-                        }
-                    },
-                    Source: '',
-
-                    ReplyToAddresses: [''],
-                    ReturnPath: '',
-                    ReturnPathArn: '',
-                    SourceArn: ''
-                };
 
                 /*ses.sendEmail({}, (err, data) => {
 
@@ -90,7 +62,40 @@ module.exports = {
 
                     console.log(message);
 
-                    parser.on('end', (email) => console.log(email));
+                    parser.on('end', (email) => {
+
+                        const sesParams = {
+                            Destination: {
+                                /*BccAddresses: [''],
+                                CcAddresses: [''],*/
+                                ToAddresses: email.to.map((value) => value.address)
+                            },
+                            Message: {
+                                Body: {
+                                    Html: {
+                                        Data: email.html,
+                                        Charset: Charset.UTF_8
+                                    },
+                                    Text: {
+                                        Data: email.text,
+                                        Charset: Charset.UTF_8
+                                    }
+                                },
+                                Subject: {
+                                    Data: email.subject,
+                                    Charset: Charset.UTF_8
+                                }
+                            },
+                            Source: process.env.SOURCE_EMAIL,
+
+                            ReplyToAddresses: email.from.map((value) => value.address)/*,
+                            ReturnPath: '',
+                            ReturnPathArn: '',
+                            SourceArn: ''*/
+                        };
+
+                        console.log(sesParams);
+                    });
                     parser.write(message.content);
                     parser.end();
                 //}
