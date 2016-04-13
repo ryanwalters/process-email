@@ -45,7 +45,7 @@ module.exports = {
 
             case 'Notification':
 
-                const message = JSON.parse(payload.message);
+                const message = JSON.parse(payload.Message);
                 const ses = new AWS.SES();
 
                 /*ses.sendEmail({}, (err, data) => {
