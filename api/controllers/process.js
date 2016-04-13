@@ -14,7 +14,7 @@ module.exports = {
 
         // Check the AWS SNS message type
 
-        console.log('check header', request.headers['x-amz-sns-message-type']);
+        console.log(request.payload);
 
         switch (request.headers['x-amz-sns-message-type']) {
 
