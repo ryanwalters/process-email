@@ -15,26 +15,30 @@ module.exports = {
         // Check the AWS SNS message type
 
         switch (request.headers['x-amz-sns-message-type']) {
+
             case 'SubscriptionConfirmation':
 
                 // Confirm the ARN is valid before subscribing
 
-                if (process.env.AMAZON_ARNS.indexOf(request.payload.TopicArn) !== -1) {
-
-                    Request(request.payload.SubscribeURL, (error, response, body) => {
-
-                        if (!error && response.statusCode === 200) {
-
-                            console.log('Successfully subscribed.');
-
-                            Xml2js.parseString(body, (err, result) => console.log(result));
-                        }
-                    });
+                if (process.env.AMAZON_ARNS.indexOf(request.payload.TopicArn) === -1) {
+                    return reply(Boom.badRequest('Invalid TopicArn'));
                 }
 
+                Request(request.payload.SubscribeURL, (error, response, body) => {
+
+                    if (!error && response.statusCode === 200) {
+
+                        console.log('Successfully subscribed.');
+
+                        Xml2js.parseString(body, (err, result) => console.log(result));
+                    }
+                });
+
                 break;
+
             case 'Notification':
                 break;
+
             default:
                 return reply(Boom.badRequest());
         }
