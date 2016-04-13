@@ -12,9 +12,9 @@ module.exports = {
 
     handler: (request, reply) => {
 
-        // Check the AWS SNS message type
+        const payload = JSON.parse(request.payload);
 
-        console.log(JSON.parse(request.payload));
+        // Check the AWS SNS message type
 
         switch (request.headers['x-amz-sns-message-type']) {
 
@@ -22,13 +22,13 @@ module.exports = {
 
                 // Confirm the ARN is valid before subscribing
 
-                if (process.env.AMAZON_TOPIC_ARNS && process.env.AMAZON_TOPIC_ARNS.indexOf(request.payload.TopicArn) === -1) {
+                if (process.env.AMAZON_TOPIC_ARNS && process.env.AMAZON_TOPIC_ARNS.indexOf(payload.TopicArn) === -1) {
                     return reply(Boom.badRequest('Invalid TopicArn'));
                 }
 
-                console.log('arn exists, request', request.payload.SubscribeURL);
+                console.log('arn exists, request', payload.SubscribeURL);
 
-                Request(request.payload.SubscribeURL, (error, response, body) => {
+                Request(payload.SubscribeURL, (error, response, body) => {
 
                     console.log('attempted to request', error, body);
 
