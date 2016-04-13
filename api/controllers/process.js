@@ -43,7 +43,7 @@ module.exports = {
 
             case 'Notification':
 
-                console.log(JSON.parse(payload.message));
+                console.log(typeof payload.message, payload.message);
 
                 break;
 
