@@ -63,6 +63,7 @@ module.exports = {
                     message.receipt.spfVerdict === Status.PASS &&
                     message.receipt.dkimVerdict === Status.PASS) {*/
 
+                console.log(message.receipt);
 
                 // Parse the content delivered by SNS
 
@@ -77,7 +78,7 @@ module.exports = {
                         Destination: {
                             /*BccAddresses: [''],
                             CcAddresses: [''],*/
-                            ToAddresses: email.to.map((value) => value.address)
+                            ToAddresses: process.env.FORWARD_TO.split(' ')
                         },
                         Message: {
                             Body: {
