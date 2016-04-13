@@ -53,6 +53,8 @@ module.exports = {
 
                 const message = JSON.parse(payload.Message);
 
+                console.log(message);
+
 
                 // Make sure the email is safe
 
@@ -82,11 +84,11 @@ module.exports = {
                         Message: {
                             Body: {
                                 Html: {
-                                    Data: `To: ${message.destination.join(', ')}<hr />${email.html}`,
+                                    Data: `To: ${message.destination}<hr />${email.html}`,
                                     Charset: Charset.UTF_8
                                 },
                                 Text: {
-                                    Data: `To: ${message.destination.join(', ')} --- ${email.text}`,
+                                    Data: `To: ${message.destination} --- ${email.text}`,
                                     Charset: Charset.UTF_8
                                 }
                             },
