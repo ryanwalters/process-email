@@ -68,6 +68,8 @@ module.exports = {
 
             default:
                 return reply(Boom.badRequest());
+
+            return reply('ok');
         }
     }
 };
