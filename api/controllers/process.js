@@ -14,11 +14,13 @@ module.exports = {
 
         const payload = JSON.parse(request.payload);
 
+
         // Check the AWS SNS message type
 
         switch (request.headers['x-amz-sns-message-type']) {
 
             case 'SubscriptionConfirmation':
+
 
                 // Confirm the ARN is valid before subscribing
 
@@ -26,32 +28,28 @@ module.exports = {
                     return reply(Boom.badRequest('Invalid TopicArn'));
                 }
 
-                console.log('arn exists, request', payload.SubscribeURL);
+
+                // ARN is valid, subscribe
 
                 Request(payload.SubscribeURL, (error, response, body) => {
 
-                    console.log('attempted to request', error, body);
-
                     if (!error && response.statusCode === 200) {
-
-                        console.log('Successfully subscribed.');
-
-                        Xml2js.parseString(body, (err, result) => console.log(result));
+                        Xml2js.parseString(body, (err, result) =>
+                            console.log(`Successfully subscribed to: ${result.ConfirmSubscriptionResult.SubscriptionArn}`));
                     }
                 });
 
                 break;
 
             case 'Notification':
+
+                console.log(payload);
+
                 break;
 
             default:
                 return reply(Boom.badRequest());
         }
-
-        console.log(request.headers);
-
-        reply('ok');
 
         /*const parser = new MailParser();
 
