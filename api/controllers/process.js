@@ -48,28 +48,30 @@ module.exports = {
                 const message = JSON.parse(payload.Message);
                 const ses = new AWS.SES();
 
+                console.log('notification');
+
                 /*ses.sendEmail({}, (err, data) => {
 
                 });*/
 
-                if (message.receipt.spamVerdict === Status.PASS &&
+                /*if (message.receipt.spamVerdict === Status.PASS &&
                     message.receipt.virusVerdict === Status.PASS &&
                     message.receipt.spfVerdict === Status.PASS &&
-                    message.receipt.dkimVerdict === Status.PASS) {
+                    message.receipt.dkimVerdict === Status.PASS) {*/
 
                     const parser = new MailParser();
 
                     parser.on('end', (email) => console.log(email));
                     parser.write(message.content);
                     parser.end();
-                }
+                //}
 
                 break;
 
             default:
                 return reply(Boom.badRequest());
         }
-        
+
         return reply('ok');
     }
 };
