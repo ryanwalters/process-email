@@ -52,18 +52,19 @@ module.exports = {
             case 'Notification':
 
                 const message = JSON.parse(payload.Message);
-                const ses = new AWS.SES();
 
-                /*ses.sendEmail({}, (err, data) => {
+                console.log(message);
 
-                });*/
 
-                /*if (message.receipt.spamVerdict === Status.PASS &&
-                    message.receipt.virusVerdict === Status.PASS &&
-                    message.receipt.spfVerdict === Status.PASS &&
-                    message.receipt.dkimVerdict === Status.PASS) {*/
+                // Make sure the email is safe
 
-                console.log(message.receipt);
+                if (message.receipt.spamVerdict.status !== Status.PASS ||
+                    message.receipt.virusVerdict.status !== Status.PASS ||
+                    message.receipt.spfVerdict.status !== Status.PASS ||
+                    message.receipt.dkimVerdict.status !== Status.PASS) {
+                    return console.log('Ignoring spam');
+                }
+
 
                 // Parse the content delivered by SNS
 
@@ -71,13 +72,13 @@ module.exports = {
 
                 parser.on('end', (email) => {
 
+                    const ses = new AWS.SES();
 
-                    // Set the parameters for sending the email to the recipients
 
-                    const sesParams = {
+                    // Send the email
+
+                    ses.sendEmail({
                         Destination: {
-                            /*BccAddresses: [''],
-                            CcAddresses: [''],*/
                             ToAddresses: process.env.FORWARD_TO.split(' ')
                         },
                         Message: {
@@ -97,30 +98,19 @@ module.exports = {
                             }
                         },
                         Source: process.env.SOURCE_EMAIL,
-
-                        ReplyToAddresses: email.from.map((value) => value.address)/*,
-                        ReturnPath: '',
-                        ReturnPathArn: '',
-                        SourceArn: ''*/
-                    };
-
-
-                    // Send the email
-
-                    ses.sendEmail(sesParams, (err, data) => {
+                        ReplyToAddresses: email.from.map((value) => value.address)
+                    }, (err, data) => {
 
                         if (err) {
                             return console.log(err, err.stack);
                         }
 
-                        console.log('Email successfully sent.', data);
+                        console.log('Email successfully sent', data);
                     })
                 });
 
                 parser.write(message.content);
                 parser.end();
-
-                //}
 
                 break;
 
