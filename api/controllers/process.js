@@ -47,8 +47,35 @@ module.exports = {
 
                 const message = JSON.parse(payload.Message);
                 const ses = new AWS.SES();
+                const sesParams = {
+                    Destination: {
+                        BccAddresses: [''],
+                        CcAddresses: [''],
+                        ToAddresses: ['']
+                    },
+                    Message: {
+                        Body: {
+                            Html: {
+                                Data: '',
+                                Charset: ''
+                            },
+                            Text: {
+                                Data: '',
+                                Charset: ''
+                            }
+                        },
+                        Subject: {
+                            Data: '',
+                            Charset: ''
+                        }
+                    },
+                    Source: '',
 
-                console.log('notification');
+                    ReplyToAddresses: [''],
+                    ReturnPath: '',
+                    ReturnPathArn: '',
+                    SourceArn: ''
+                };
 
                 /*ses.sendEmail({}, (err, data) => {
 
@@ -60,6 +87,8 @@ module.exports = {
                     message.receipt.dkimVerdict === Status.PASS) {*/
 
                     const parser = new MailParser();
+
+                    console.log(message);
 
                     parser.on('end', (email) => console.log(email));
                     parser.write(message.content);
