@@ -36,4 +36,4 @@ You will need to set up a few things within the AWS Dashboard:
 subscription, and click the "Request Confirmations" button. This should make the POST to your deployed app and handle
 the subscription. You can verify the subscription was successful by checking your app's logs.
 
-6. Done!
+That's it! Emails sent to the recipients in your SES rule set should now be forwarded on to your other email addresses.
